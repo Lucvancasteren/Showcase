@@ -144,3 +144,32 @@
   cursor: pointer;
   z-index: 1000; /* Verhoogd naar 1000 om boven fullscreen-menu te blijven */
 } 
+
+.fade-in-text {
+  opacity: 0;
+  transform: translateY(50px);
+  transition: opacity 0.8s ease-out, transform 0.8s cubic-bezier(0.17, 0.67, 0.83, 0.67);
+  will-change: opacity, transform;
+}
+
+.fade-in-text.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.typewriter-text {
+  opacity: 0;
+  transform: translateY(100px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.typewriter-text.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.text-container {
+  padding: 2rem;
+}
+
+

@@ -9,13 +9,30 @@ export default function Home() {
   const [searchInput, setSearchInput] = useState("");
   const [displayText, setDisplayText] = useState("Type 'help' for commands");
   const [scrollPosition, setScrollPosition] = useState(0);
+  const [isVisible, setIsVisible] = useState(false);
+  const [visibleLines, setVisibleLines] = useState([false, false, false, false]);
 
   useEffect(() => {
     const handleScroll = () => {
-      setScrollPosition(window.scrollY);
+      const textContainer = document.querySelector('.text-container');
+      if (textContainer) {
+        const containerTop = textContainer.getBoundingClientRect().top;
+        const containerHeight = textContainer.getBoundingClientRect().height;
+        const windowHeight = window.innerHeight;
+        
+        // Bereken wanneer elke regel zichtbaar moet worden
+        const lineHeight = containerHeight / 4;
+        const newVisibleLines = visibleLines.map((_, index) => {
+          const linePosition = containerTop + (lineHeight * index);
+          return linePosition < windowHeight - 100 && linePosition > -100;
+        });
+        
+        setVisibleLines(newVisibleLines);
+      }
     };
 
     window.addEventListener('scroll', handleScroll);
+    handleScroll(); // Check initiële staat
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
@@ -37,12 +54,13 @@ export default function Home() {
   };
 
   return (
-    <div style={styles.container}>
-      <div className="statusLights">
-        <div style={styles.lightRed}></div>
-        <div style={styles.lightYellow}></div>
-        <div style={styles.lightGreen}></div>
-      </div>
+    <>
+      <div style={styles.container}>
+        <div className="statusLights">
+          <div style={styles.lightRed}></div>
+          <div style={styles.lightYellow}></div>
+          <div style={styles.lightGreen}></div>
+        </div>
 
       <div className="alwaysVisibleText">
         {displayText}
@@ -59,27 +77,48 @@ export default function Home() {
         />
       </div>
 
-      <video className="video-container" autoPlay muted loop playsInline>
-        <source src="/afbeeldingen/luc.mp4" type="video/mp4" />
-      </video>
+        <video className="video-container" autoPlay muted loop playsInline>
+          <source src="/afbeeldingen/luc.mp4" type="video/mp4" />
+        </video>
 
+        {isMenuOpen && (
+          <div className="fullscreen-menu">
+            <ul className="menu-list">
+              <li className="menu-item">home</li>
+              <li className="menu-item">about</li>
+              <li className="menu-item">projects</li>
+              <li className="menu-item">contact</li>
+            </ul>
+          </div>
+        )}
 
-
-      {isMenuOpen && (
-        <div className="fullscreen-menu">
-          <ul className="menu-list">
-            <li className="menu-item">home</li>
-            <li className="menu-item">about</li>
-            <li className="menu-item">projects</li>
-            <li className="menu-item">contact</li>
-          </ul>
+        <button className="menuButton" onClick={toggleMenu}>
+          <Terminal size={40} color="black" />
+        </button>
+      </div>
+      
+      <div style={styles.newContainer}>
+        <div style={styles.textContainer} className="text-container">
+          {[
+            "Welkom in mijn digitale wereld",
+            "Full-stack Developer & UX Designer",
+            "Gespecialiseerd in React & Next.js",
+            "Laten we samen iets geweldigs bouwen"
+          ].map((text, index) => (
+            <p
+              key={index}
+              className={`fade-in-text ${visibleLines[index] ? 'visible' : ''}`}
+              style={{
+                ...styles.text,
+                transitionDelay: `${index * 0.15}s`
+              }}
+            >
+              {text}
+            </p>
+          ))}
         </div>
-      )}
-
-      <button className="menuButton" onClick={toggleMenu}>
-        <Terminal size={40} color="black" />
-      </button>
-    </div>
+      </div>
+    </>
   );
 }
 
@@ -188,5 +227,31 @@ const styles = {
     marginTop: "100vh",
     zIndex: 20,
   },
+  newContainer: {
+    width: "100%",
+    minHeight: "100vh",
+    backgroundColor: "black",
+    position: "relative",
+    zIndex: 1,
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  textContainer: {
+    padding: '2rem',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '2rem',
+    alignItems: 'center',
+    width: '100%',
+    maxWidth: '800px'
+  },
+  text: {
+    color: '#4CAF50',
+    fontSize: '2rem',
+    fontFamily: 'monospace',
+    textAlign: 'center',
+    width: '100%'
+  }
 };
 
