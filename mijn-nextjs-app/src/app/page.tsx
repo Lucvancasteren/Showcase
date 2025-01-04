@@ -38,17 +38,17 @@ export default function Home() {
 
   return (
     <div style={styles.container}>
-      <div style={styles.statusLights}>
+      <div className="statusLights">
         <div style={styles.lightRed}></div>
         <div style={styles.lightYellow}></div>
         <div style={styles.lightGreen}></div>
       </div>
 
-      <div style={styles.alwaysVisibleText}>
+      <div className="alwaysVisibleText">
         {displayText}
       </div>
 
-      <div style={styles.searchBar}>
+      <div className="searchBar">
         <input
           type="text"
           placeholder="Enter command..."
@@ -72,12 +72,11 @@ export default function Home() {
             <li className="menu-item">about</li>
             <li className="menu-item">projects</li>
             <li className="menu-item">contact</li>
-            <li className="menu-item">help</li>
           </ul>
         </div>
       )}
 
-      <button style={styles.menuButton} onClick={toggleMenu}>
+      <button className="menuButton" onClick={toggleMenu}>
         <Terminal size={40} color="black" />
       </button>
     </div>

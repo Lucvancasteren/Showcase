@@ -1,0 +1,146 @@
+.statusLights {
+  position: absolute;
+  top: 80px;
+  left: 0.5rem;
+  display: flex;
+  gap: 10px;
+  z-index: 50;
+}
+
+.alwaysVisibleText {
+  position: absolute;
+  top: 100px;
+  left: 0.5rem;
+  color: #4CAF50;
+  font-size: 16px;
+  font-family: monospace;
+  z-index: 21;
+}
+
+.searchBar {
+  position: absolute;
+  top: 150px;
+  left: 0.5rem;
+  background-color: #000;
+  border: 2px solid #4CAF50;
+  padding: 5px 10px;
+  z-index: 20;
+  width: 90%;
+}
+
+@media (min-width: 768px) {
+  .statusLights {
+    left: 15rem;
+  }
+
+  .alwaysVisibleText {
+    left: 15rem;
+    font-size: 18px;
+  }
+
+  .searchBar {
+    left: 15rem;
+    width: 60%;
+  }
+}
+
+.video-container {
+    position: absolute;
+    top: 45%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 200%;
+    height: 150%; /* Groter op mobiel */
+    object-fit: contain;
+  }
+  
+  @media (min-width: 768px) {
+    .video-container {
+        width: 100%;
+      height: 180%; /* Originele grootte op desktop */
+      top: 40%;
+    }
+  }
+
+  .fullscreen-menu {
+    position: fixed !important;
+    inset: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    background-color: black !important;
+    border: 0px #4CAF50 !important; /* Border verwijderd voor mobiel */
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    z-index: 999 !important;
+  }
+  
+  .menu-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    text-align: left; /* Veranderd van center naar left */
+    font-size: 24px;
+    width: 80%; /* Voeg een breedte toe om ruimte aan de zijkanten te hebben */
+    max-width: 300px; /* Maximum breedte voor grotere schermen */
+    border: 0px #4CAF50;
+    font-family: monospace;
+  }
+  
+  .menu-item {
+    margin: 20px 0;
+    cursor: pointer;
+    color: #4CAF50;
+  }
+  
+  @media (min-width: 768px) {
+    .fullscreen-menu {
+      position: absolute !important;
+      inset: auto !important;
+      top: 100px !important;
+      right: 20px !important;
+      width: 300px !important;
+      height: auto !important;
+      border: 2px solid #4CAF50 !important; /* Border alleen op desktop */
+    }
+  
+    .menu-list {
+      font-size: 16px;
+    }
+  
+    .menu-item {
+      margin: 10px 0;
+    }
+  }
+
+  /* Reset standaard margins en paddings */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  body {
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+  }
+  
+  html {
+    overflow-x: hidden;
+  }
+
+.menuButton {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background-color: #4CAF50;
+  border: none;
+  width: 60px;
+  height: 60px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  z-index: 1000; /* Verhoogd naar 1000 om boven fullscreen-menu te blijven */
+} 
