@@ -4,6 +4,33 @@ import { useState, useEffect } from "react";
 import { Terminal } from "lucide-react";
 import "./styles.css";
 
+interface Styles {
+  container: React.CSSProperties;
+  statusLights: React.CSSProperties;
+  lightRed: React.CSSProperties;
+  lightYellow: React.CSSProperties;
+  lightGreen: React.CSSProperties;
+  video: React.CSSProperties;
+  alwaysVisibleText: React.CSSProperties;
+  searchBar: React.CSSProperties;
+  searchInput: React.CSSProperties;
+  menuButton: React.CSSProperties;
+  menu: React.CSSProperties;
+  bodyContainer: React.CSSProperties;
+  newContainer: React.CSSProperties;
+  textContainer: React.CSSProperties;
+  text: React.CSSProperties;
+  imageContainer: React.CSSProperties;
+  fullWidthImageWrapper: React.CSSProperties;
+  projectImage: React.CSSProperties;
+  footer: React.CSSProperties;
+  footerContent: React.CSSProperties;
+  footerText: React.CSSProperties;
+  footerLinks: React.CSSProperties;
+  footerLink: React.CSSProperties;
+  footerTitle: React.CSSProperties;
+}
+
 export default function Home() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [searchInput, setSearchInput] = useState("");
@@ -123,6 +150,7 @@ export default function Home() {
 
       <footer style={styles.footer}>
         <div style={styles.footerContent}>
+          <h2 style={styles.footerTitle}>Let's Chat!</h2>
           <p style={styles.footerText}>&copy; {new Date().getFullYear()} - Gemaakt met ❤️</p>
           <div style={styles.footerLinks}>
             <a href="https://github.com/yourusername" style={styles.footerLink}>GitHub</a>
@@ -292,12 +320,16 @@ const styles: Styles = {
     zIndex: 2,
   },
   footerContent: {
-    maxWidth: '800px',
-    margin: '0 auto',
+    width: '100%',
+    maxWidth: '1200px',
+    margin: '0',
     display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: '0 2rem',
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+    gap: '1rem',
+    position: 'relative',
+    left: '15rem',
+    paddingRight: '2rem',
   },
   footerText: {
     color: '#4CAF50',
@@ -313,9 +345,16 @@ const styles: Styles = {
     textDecoration: 'none',
     fontFamily: 'monospace',
     transition: 'opacity 0.2s',
-    ':hover': {
-      opacity: 0.8,
     },
+  footerTitle: {
+    color: '#4CAF50',
+    fontFamily: "'Bruno Ace SC', cursive",
+    fontSize: '4rem',
+    margin: '0 0 1rem 0',
+    textAlign: 'left',
+    letterSpacing: '0.05em',
   },
-};
+  }
+  
+
 
