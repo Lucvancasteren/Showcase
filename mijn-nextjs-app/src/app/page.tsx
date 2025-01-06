@@ -29,6 +29,16 @@ interface Styles {
   footerLinks: React.CSSProperties;
   footerLink: React.CSSProperties;
   footerTitle: React.CSSProperties;
+  availableStatus: React.CSSProperties;
+  statusDot: React.CSSProperties;
+  availableText: React.CSSProperties;
+  lineContainer: React.CSSProperties;
+  line: React.CSSProperties;
+  lineGap: React.CSSProperties;
+  columnContainer: React.CSSProperties;
+  columnTitle: React.CSSProperties;
+  columnLinks: React.CSSProperties;
+  columnLink: React.CSSProperties;
 }
 
 export default function Home() {
@@ -38,6 +48,8 @@ export default function Home() {
   const [scrollPosition, setScrollPosition] = useState(0);
   const [isVisible, setIsVisible] = useState(false);
   const [visibleLines, setVisibleLines] = useState([false, false, false, false]);
+  const [cursorPosition, setCursorPosition] = useState({ x: -100, y: -100 });
+  const [isHovering, setIsHovering] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -63,6 +75,50 @@ export default function Home() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  useEffect(() => {
+    const updateCursorPosition = (e: MouseEvent) => {
+      setCursorPosition({ x: e.clientX, y: e.clientY });
+    };
+
+    const handleMouseOver = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      if (
+        target.tagName === 'A' || 
+        target.tagName === 'BUTTON' || 
+        target.classList.contains('menu-item') ||
+        target.getAttribute('role') === 'button'
+      ) {
+        setIsHovering(true);
+      }
+    };
+
+    const handleMouseOut = () => {
+      setIsHovering(false);
+    };
+
+    window.addEventListener('mousemove', updateCursorPosition);
+    document.addEventListener('mouseover', handleMouseOver);
+    document.addEventListener('mouseout', handleMouseOut);
+
+    return () => {
+      window.removeEventListener('mousemove', updateCursorPosition);
+      document.removeEventListener('mouseover', handleMouseOver);
+      document.removeEventListener('mouseout', handleMouseOut);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (isMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [isMenuOpen]);
+
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
@@ -82,6 +138,12 @@ export default function Home() {
 
   return (
     <>
+      <div 
+        className="cursor-dot" 
+        style={{ 
+          transform: `translate(${cursorPosition.x}px, ${cursorPosition.y}px) scale(${isHovering ? 1.5 : 1})`
+        }}
+      />
       <div style={styles.container}>
         <div className="statusLights">
           <div style={styles.lightRed}></div>
@@ -105,7 +167,7 @@ export default function Home() {
       </div>
 
         <video className="video-container" autoPlay muted loop playsInline>
-          <source src="/afbeeldingen/luc.mp4" type="video/mp4" />
+          <source src="/afbeeldingen/luc3.mp4" type="video/mp4" />
         </video>
 
         {isMenuOpen && (
@@ -119,8 +181,21 @@ export default function Home() {
           </div>
         )}
 
-        <button className="menuButton" onClick={toggleMenu}>
-          <Terminal size={40} color="black" />
+        <button style={{ 
+          position: "absolute",
+          top: "20px",
+          right: "20px",
+          backgroundColor: "#111111",
+          border: "none",
+          width: "60px",
+          height: "60px",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          cursor: "pointer",
+          zIndex: 1000,
+        }} onClick={toggleMenu}>
+          <Terminal size={40} color="white" />
         </button>
       </div>
       
@@ -149,12 +224,32 @@ export default function Home() {
       </div>
 
       <footer style={styles.footer}>
-        <div style={styles.footerContent}>
-          <h2 style={styles.footerTitle}>Let's Chat!</h2>
-          <p style={styles.footerText}>&copy; {new Date().getFullYear()} - Gemaakt met ❤️</p>
-          <div style={styles.footerLinks}>
-            <a href="https://github.com/yourusername" style={styles.footerLink}>GitHub</a>
-            <a href="https://linkedin.com/in/yourusername" style={styles.footerLink}>LinkedIn</a>
+        <div style={styles.footerContent} className="footer-content-mobile">
+          <h2 style={styles.footerTitle} className="underline-animation footer-title-mobile">
+            {"LET'S\nCHAT"}
+          </h2>
+          <div style={styles.availableStatus}>
+            <div className="status-dot"></div>
+            <span style={styles.availableText}>Available</span>
+          </div>
+          <div style={styles.lineContainer}>
+            <div style={styles.columnContainer}>
+              <div style={styles.line}></div>
+              <h3 style={styles.columnTitle}>Social</h3>
+              <div style={styles.columnLinks}>
+                <a href="#" style={styles.columnLink}>Instagram</a>
+                <a href="#" style={styles.columnLink}>LinkedIn</a>
+              </div>
+            </div>
+            <div style={styles.lineGap}></div>
+            <div style={styles.columnContainer}>
+              <div style={styles.line}></div>
+              <h3 style={styles.columnTitle}>Contact</h3>
+              <div style={styles.columnLinks}>
+                <a href="#" style={styles.columnLink}>Phone</a>
+                <a href="#" style={styles.columnLink}>Email</a>
+              </div>
+            </div>
           </div>
         </div>
       </footer>
@@ -229,7 +324,7 @@ const styles: Styles = {
   },
   searchInput: {
     background: "#000",
-    color: "#4CAF50",
+    color: "#262626",
     border: "none",
     outline: "none",
     fontSize: "16px",
@@ -240,7 +335,7 @@ const styles: Styles = {
     position: "absolute",
     top: "20px",
     right: "20px",
-    backgroundColor: "#4CAF50",
+    backgroundColor: "#111111",
     border: "none",
     width: "60px",
     height: "60px",
@@ -314,7 +409,7 @@ const styles: Styles = {
   footer: {
     width: '100%',
     backgroundColor: 'black',
-    borderTop: '1px solid #4CAF50',
+    borderTop: '1px solid #262626',
     padding: '2rem 0',
     marginTop: 'auto',
     zIndex: 2,
@@ -347,12 +442,70 @@ const styles: Styles = {
     transition: 'opacity 0.2s',
     },
   footerTitle: {
-    color: '#4CAF50',
+    color: '#262626',
     fontFamily: "'Bruno Ace SC', cursive",
-    fontSize: '4rem',
+    fontSize: '7rem',
     margin: '0 0 1rem 0',
     textAlign: 'left',
     letterSpacing: '0.05em',
+  },
+  availableStatus: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '0.5rem',
+    marginTop: '1rem',
+    marginBottom: '1rem',
+  },
+  statusDot: {
+    width: '8px',
+    height: '8px',
+    backgroundColor: '#28C840',
+    borderRadius: '50%',
+  },
+  availableText: {
+    color: '#262626',
+    fontFamily: 'monospace',
+    fontSize: '1rem',
+  },
+  lineContainer: {
+    display: 'flex',
+    alignItems: 'flex-start',
+    width: '100%',
+    marginTop: '2rem',
+  },
+  line: {
+    height: '1px',
+    backgroundColor: '#262626',
+    width: '100%',
+    marginBottom: '1rem',
+  },
+  lineGap: {
+    width: '50px',
+  },
+  columnContainer: {
+    flex: 1,
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '1rem',
+  },
+  columnTitle: {
+    color: '#262626',
+    fontFamily: 'monospace',
+    fontSize: '1.2rem',
+    margin: '0.2rem 0',
+  },
+  columnLinks: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '0.5rem',
+  },
+  columnLink: {
+    color: '#262626',
+    textDecoration: 'none',
+    fontFamily: 'monospace',
+    fontSize: '1rem',
+    transition: 'opacity 0.2s',
+    cursor: 'pointer',
   },
   }
   
