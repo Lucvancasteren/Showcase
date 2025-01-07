@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { Terminal } from "lucide-react";
 import "./styles.css";
+import { useRouter } from 'next/navigation';
 
 interface Styles {
   container: React.CSSProperties;
@@ -45,6 +46,7 @@ interface Styles {
 }
 
 export default function Home() {
+  const router = useRouter();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [searchInput, setSearchInput] = useState("");
   const [displayText, setDisplayText] = useState("Type 'help' for commands");
@@ -56,6 +58,8 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(true);
   const [loadingProgress, setLoadingProgress] = useState(0);
   const [dots, setDots] = useState('');
+  const [showWelcome, setShowWelcome] = useState(false);
+  const [showMainContent, setShowMainContent] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -148,6 +152,7 @@ export default function Home() {
       if (currentStep >= steps) {
         clearInterval(timer);
         setIsLoading(false);
+        setShowWelcome(true); // Toon welkomstscherm na laden
       }
     }, interval);
 
@@ -160,15 +165,23 @@ export default function Home() {
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
-      if (searchInput.toLowerCase() === "help") {
+      const command = searchInput.toLowerCase();
+      if (command === "help") {
         setDisplayText(
           "Available commands:\n- home\n- about\n- projects\n- contact\n- help"
         );
+      } else if (command === "projects") {
+        router.push('/projects');
       } else {
         setDisplayText(`Command '${searchInput}' not found. Type 'help' for available commands.`);
       }
       setSearchInput("");
     }
+  };
+
+  const handleWelcomeClick = () => {
+    setShowWelcome(false);
+    setShowMainContent(true);
   };
 
   if (isLoading) {
@@ -239,6 +252,149 @@ export default function Home() {
     );
   }
 
+  if (showWelcome) {
+    return (
+      <div 
+        onClick={handleWelcomeClick}
+        style={{
+          height: '100vh',
+          width: '100vw',
+          backgroundColor: 'black',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+          alignItems: 'center',
+          gap: '2rem',
+          cursor: 'pointer',
+          backgroundImage: `
+            linear-gradient(rgba(38, 38, 38, 0.3) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(38, 38, 38, 0.3) 1px, transparent 1px)
+          `,
+          backgroundSize: '50px 50px',
+          backgroundPosition: 'center center',
+        }}
+      >
+        <div style={{ position: 'relative' }}>
+          <div style={{
+            position: 'absolute',
+            top: '-20px',
+            left: 0,
+            width: '100%',
+            height: '2px',
+            overflow: 'hidden',
+          }}>
+            <div style={{
+              position: 'absolute',
+              height: '100%',
+              width: '50%',
+              background: '#262626',
+              animation: 'slideLeft 2s linear infinite',
+            }} />
+          </div>
+          <h1 style={{
+            color: '#262626',
+            fontFamily: "'Bruno Ace SC', cursive",
+            fontSize: 'clamp(2rem, 8vw, 6rem)',
+            textAlign: 'center',
+            margin: 0,
+            animation: 'float 3s ease-in-out infinite',
+          }}>
+            LUC VAN CASTEREN
+          </h1>
+          <div style={{
+            position: 'absolute',
+            bottom: '-20px',
+            left: 0,
+            width: '100%',
+            height: '2px',
+            overflow: 'hidden',
+          }}>
+            <div style={{
+              position: 'absolute',
+              height: '100%',
+              width: '50%',
+              background: '#262626',
+              animation: 'slideRight 2s linear infinite',
+            }} />
+          </div>
+        </div>
+        <p style={{
+          color: '#262626',
+          fontFamily: "'Bruno Ace SC', cursive",
+          fontSize: 'clamp(0.8rem, 1.5vw, 1rem)',
+          margin: 0,
+          position: 'absolute',
+          bottom: '2rem',
+          animation: 'pulse 2s ease-in-out infinite',
+        }}>
+          <span className="desktop-text">click anywhere</span>
+          <span className="mobile-text">tap anywhere</span>
+        </p>
+
+        <style jsx>{`
+          @keyframes float {
+            0% {
+              transform: translateY(0px);
+            }
+            50% {
+              transform: translateY(-20px);
+            }
+            100% {
+              transform: translateY(0px);
+            }
+          }
+
+          @keyframes pulse {
+            0% {
+              opacity: 0.1;
+            }
+            50% {
+              opacity: 1;
+            }
+            100% {
+              opacity: 0.1;
+            }
+          }
+
+          @keyframes slideRight {
+            0% {
+              left: -50%;
+            }
+            100% {
+              left: 100%;
+            }
+          }
+
+          @keyframes slideLeft {
+            0% {
+              right: -50%;
+            }
+            100% {
+              right: 100%;
+            }
+          }
+
+          .mobile-text {
+            display: none;
+          }
+
+          @media (hover: none) and (pointer: coarse) {
+            .desktop-text {
+              display: none;
+            }
+            .mobile-text {
+              display: inline;
+            }
+          }
+        `}</style>
+      </div>
+    );
+  }
+
+  if (!showMainContent) {
+    return null;
+  }
+
   return (
     <>
       <div 
@@ -276,10 +432,13 @@ export default function Home() {
         {isMenuOpen && (
           <div className="fullscreen-menu">
             <ul className="menu-list">
-              <li className="menu-item">home</li>
-              <li className="menu-item">about</li>
-              <li className="menu-item">projects</li>
-              <li className="menu-item">contact</li>
+              <li className="menu-item" onClick={() => router.push('/')}>home</li>
+              <li className="menu-item" onClick={() => router.push('/about')}>about</li>
+              <li className="menu-item" onClick={() => {
+                router.push('/projects');
+                setIsMenuOpen(false);
+              }}>projects</li>
+              <li className="menu-item" onClick={() => router.push('/contact')}>contact</li>
             </ul>
           </div>
         )}
@@ -305,36 +464,30 @@ export default function Home() {
       <div style={styles.newContainer}>
         <div style={styles.textContainer} className="text-container">
           <p
-            className={`fade-in-text gradient-text ${visibleLines[0] ? 'visible' : ''}`}
+            className={`fade-in-text ${visibleLines[0] ? 'visible' : ''}`}
             style={{
               ...styles.text,
-              transitionDelay: '0s',
-              transform: visibleLines[0] ? 'translateX(0)' : 'translateX(-50px)',
-              opacity: visibleLines[0] ? 1 : 0,
+              transitionDelay: '0s'
             }}
           >
             Luc van Casteren is a dutch,
           </p>
           
           <p
-            className={`fade-in-text gradient-text ${visibleLines[1] ? 'visible' : ''}`}
+            className={`fade-in-text ${visibleLines[1] ? 'visible' : ''}`}
             style={{
               ...styles.text,
-              transitionDelay: '0.15s',
-              transform: visibleLines[1] ? 'translateX(0)' : 'translateX(50px)',
-              opacity: visibleLines[1] ? 1 : 0,
+              transitionDelay: '0.15s'
             }}
           >
             Full-stack Developer & UX Designer
           </p>
           
           <p
-            className={`fade-in-text gradient-text ${visibleLines[2] ? 'visible' : ''}`}
+            className={`fade-in-text ${visibleLines[2] ? 'visible' : ''}`}
             style={{
               ...styles.text,
-              transitionDelay: '0.3s',
-              transform: visibleLines[2] ? 'translateX(0)' : 'translateX(-50px)',
-              opacity: visibleLines[2] ? 1 : 0,
+              transitionDelay: '0.3s'
             }}
           >
             Specialized in React & Next.js

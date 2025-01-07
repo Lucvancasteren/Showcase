@@ -23,4 +23,11 @@ body {
     object-fit: cover;
   }
   
+  .hover-text {
+    opacity: 0;
+    pointer-events: none;
+  }
   
+  .hover-text.visible {
+    opacity: 1 !important;
+  } 
