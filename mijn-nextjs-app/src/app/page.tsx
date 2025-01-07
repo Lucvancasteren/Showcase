@@ -39,6 +39,9 @@ interface Styles {
   columnTitle: React.CSSProperties;
   columnLinks: React.CSSProperties;
   columnLink: React.CSSProperties;
+  ctaButton: React.CSSProperties;
+  textWithImage: React.CSSProperties;
+  inlineImage: React.CSSProperties;
 }
 
 export default function Home() {
@@ -50,6 +53,9 @@ export default function Home() {
   const [visibleLines, setVisibleLines] = useState([false, false, false, false]);
   const [cursorPosition, setCursorPosition] = useState({ x: -100, y: -100 });
   const [isHovering, setIsHovering] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [loadingProgress, setLoadingProgress] = useState(0);
+  const [dots, setDots] = useState('');
 
   useEffect(() => {
     const handleScroll = () => {
@@ -119,6 +125,35 @@ export default function Home() {
     };
   }, [isMenuOpen]);
 
+  useEffect(() => {
+    // Loading dots animatie
+    const dotsInterval = setInterval(() => {
+      setDots(prev => prev.length >= 3 ? '' : prev + '.');
+    }, 500);
+
+    return () => clearInterval(dotsInterval);
+  }, []);
+
+  useEffect(() => {
+    const duration = 3750;
+    const interval = 20;
+    const steps = duration / interval;
+    let currentStep = 0;
+
+    const timer = setInterval(() => {
+      currentStep++;
+      const progress = Math.min((currentStep / steps) * 100, 100);
+      setLoadingProgress(Math.floor(progress));
+
+      if (currentStep >= steps) {
+        clearInterval(timer);
+        setIsLoading(false);
+      }
+    }, interval);
+
+    return () => clearInterval(timer);
+  }, []);
+
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
@@ -135,6 +170,74 @@ export default function Home() {
       setSearchInput("");
     }
   };
+
+  if (isLoading) {
+    return (
+      <div style={{
+        height: '100vh',
+        width: '100vw',
+        backgroundColor: 'black',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+        gap: '20px',
+        backgroundImage: `
+          linear-gradient(rgba(38, 38, 38, 0.3) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(38, 38, 38, 0.3) 1px, transparent 1px)
+        `,
+        backgroundSize: '50px 50px',
+        backgroundPosition: 'center center',
+      }}>
+        <div style={{
+          width: '90%',
+          maxWidth: '800px',
+          position: 'relative'
+        }}>
+          <div style={{
+            width: '100%',
+            height: '8px',
+            backgroundColor: '#111111',
+            position: 'relative',
+            overflow: 'hidden'
+          }}>
+            <div style={{
+              position: 'absolute',
+              height: '100%',
+              width: `${loadingProgress}%`,
+              backgroundColor: '#666666',
+              transition: 'width 0.02s linear'
+            }} />
+          </div>
+          
+          <div style={{
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            color: '#999999',
+            fontFamily: "'Bruno Ace SC', cursive",
+            backgroundColor: 'black',
+            padding: '0 20px',
+            fontSize: 'clamp(16px, 5vw, 24px)'
+          }}>
+            {loadingProgress}%
+          </div>
+        </div>
+        
+        <div style={{
+          color: '#999999',
+          fontFamily: "'Bruno Ace SC', cursive",
+          fontSize: 'clamp(16px, 5vw, 24px)',
+          marginTop: '20px',
+          minWidth: '150px',
+          textAlign: 'center'
+        }}>
+          LOADING{dots}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <>
@@ -201,22 +304,49 @@ export default function Home() {
       
       <div style={styles.newContainer}>
         <div style={styles.textContainer} className="text-container">
-          {[
-            "Welkom in mijn digitale wereld",
-            "Full-stack Developer & UX Designer",
-            "Gespecialiseerd in React & Next.js",
-          ].map((text, index) => (
-            <p
-              key={index}
-              className={`fade-in-text ${visibleLines[index] ? 'visible' : ''}`}
-              style={{
-                ...styles.text,
-                transitionDelay: `${index * 0.15}s`
-              }}
-            >
-              {text}
-            </p>
-          ))}
+          <p
+            className={`fade-in-text gradient-text ${visibleLines[0] ? 'visible' : ''}`}
+            style={{
+              ...styles.text,
+              transitionDelay: '0s',
+              transform: visibleLines[0] ? 'translateX(0)' : 'translateX(-50px)',
+              opacity: visibleLines[0] ? 1 : 0,
+            }}
+          >
+            Luc van Casteren is a dutch,
+          </p>
+          
+          <p
+            className={`fade-in-text gradient-text ${visibleLines[1] ? 'visible' : ''}`}
+            style={{
+              ...styles.text,
+              transitionDelay: '0.15s',
+              transform: visibleLines[1] ? 'translateX(0)' : 'translateX(50px)',
+              opacity: visibleLines[1] ? 1 : 0,
+            }}
+          >
+            Full-stack Developer & UX Designer
+          </p>
+          
+          <p
+            className={`fade-in-text gradient-text ${visibleLines[2] ? 'visible' : ''}`}
+            style={{
+              ...styles.text,
+              transitionDelay: '0.3s',
+              transform: visibleLines[2] ? 'translateX(0)' : 'translateX(-50px)',
+              opacity: visibleLines[2] ? 1 : 0,
+            }}
+          >
+            Specialized in React & Next.js
+          </p>
+          
+          <button 
+            style={styles.ctaButton}
+            className="cta-button"
+            onClick={() => window.location.href = '/contact'}
+          >
+            Get in touch
+          </button>
           
           <div style={styles.imageContainer}>
           </div>
@@ -370,7 +500,13 @@ const styles: Styles = {
     zIndex: 1,
     display: 'flex',
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
+    backgroundImage: `
+      linear-gradient(rgba(38, 38, 38, 0.3) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(38, 38, 38, 0.3) 1px, transparent 1px)
+    `,
+    backgroundSize: '50px 50px',
+    backgroundPosition: 'center center',
   },
   textContainer: {
     padding: '2rem',
@@ -383,9 +519,9 @@ const styles: Styles = {
     maxWidth: '800px'
   },
   text: {
-    color: '#4CAF50',
+    color: '#292929',
     fontSize: '2rem',
-    fontFamily: 'monospace',
+    fontFamily: "'Bruno Ace SC', cursive",
     textAlign: 'center',
     width: '100%'
   },
@@ -507,7 +643,34 @@ const styles: Styles = {
     transition: 'opacity 0.2s',
     cursor: 'pointer',
   },
-  }
+  ctaButton: {
+    backgroundColor: 'transparent',
+    border: '1px solid #666666',
+    color: '#666666',
+    padding: '1rem 2rem',
+    fontSize: '1.2rem',
+    fontFamily: "'Bruno Ace SC', cursive",
+    cursor: 'pointer',
+    transition: 'all 0.3s ease',
+    marginTop: '2rem',
+    position: 'relative',
+    overflow: 'hidden',
+  },
+  textWithImage: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '0.2rem',
+    width: '100%',
+    justifyContent: 'flex-start',
+    paddingLeft: '10%'
+  },
+  inlineImage: {
+    width: '75px',
+    height: '75px',
+    objectFit: 'cover',
+    borderRadius: '50%'
+  },
+}
   
 
 
