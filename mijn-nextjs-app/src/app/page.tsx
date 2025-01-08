@@ -591,24 +591,20 @@ export default function Home() {
         }} className="footer-content-mobile">
           <button
             onClick={scrollToTop}
-            style={{
-              position: 'absolute',
-              right: '1rem',
-              bottom: '1rem',
-              background: 'transparent',
-              border: '2px solid #262626',
-              borderRadius: '50%',
-              width: '50px',
-              height: '50px',
-              display: window.innerWidth <= 768 ? 'none' : 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              cursor: 'pointer',
-              transition: 'all 0.3s ease',
-            }}
             className="scroll-top-button"
+            style={styles.scrollTopButton}
           >
-            <ArrowUp size={24} color="#262626" />
+            <ArrowUp 
+              size={24} 
+              color="#262626" 
+              className="rotating-arrow"
+              style={{
+                position: 'absolute',
+                left: '50%',
+                top: '50%',
+                transform: 'translate(-50%, -50%)'
+              }}
+            />
           </button>
           <h2 style={{
             color: '#262626',
@@ -665,7 +661,7 @@ export default function Home() {
                 flexDirection: 'column',
                 gap: '0.5rem',
               }}>
-                <a href="#" style={{
+                <a href="https://www.instagram.com/luc_vancasteren" style={{
                   color: '#262626',
                   textDecoration: 'none',
                   fontFamily: 'monospace',
@@ -716,7 +712,7 @@ export default function Home() {
                   transition: 'opacity 0.2s',
                   cursor: 'pointer',
                 }}>Phone</a>
-                <a href="#" style={{
+                <a href="mailto:luc1708@hotmail.com" style={{
                   color: '#262626',
                   textDecoration: 'none',
                   fontFamily: 'monospace',
@@ -1018,13 +1014,38 @@ const styles: Styles = {
     borderRadius: '50%'
   },
   scrollTopButton: {
-    backgroundColor: 'transparent',
-    border: 'none',
-    cursor: 'pointer',
     position: 'absolute',
-    top: '20px',
-    right: '20px',
-    zIndex: 1000,
+    right: '1rem',
+    bottom: '1rem',
+    background: 'transparent',
+    border: '2px solid #262626',
+    borderRadius: '50%',
+    width: '50px',
+    height: '50px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    cursor: 'pointer',
+    transition: 'all 0.3s ease',
+    overflow: 'hidden',
+  },
+  rotatingArrow: {
+    animation: 'flyAround 2s infinite ease-in-out',
+    transformOrigin: 'center',
+  },
+  '@keyframes flyAround': {
+    '0%': {
+      transform: 'translateY(0) rotate(0deg)',
+    },
+    '50%': {
+      transform: 'translateY(-5px) rotate(180deg)',
+    },
+    '100%': {
+      transform: 'translateY(0) rotate(360deg)',
+    },
+  },
+  '.scroll-top-button:hover .rotating-arrow': {
+    animation: 'flyAround 1s infinite ease-in-out',
   },
 }
   
