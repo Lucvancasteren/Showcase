@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Terminal } from "lucide-react";
+import { Terminal, ArrowUp } from "lucide-react";
 import "./styles.css";
 import { useRouter } from 'next/navigation';
 
@@ -43,6 +43,7 @@ interface Styles {
   ctaButton: React.CSSProperties;
   textWithImage: React.CSSProperties;
   inlineImage: React.CSSProperties;
+  scrollTopButton: React.CSSProperties;
 }
 
 export default function Home() {
@@ -60,6 +61,15 @@ export default function Home() {
   const [dots, setDots] = useState('');
   const [showWelcome, setShowWelcome] = useState(false);
   const [showMainContent, setShowMainContent] = useState(false);
+  const [shouldTrackCursor, setShouldTrackCursor] = useState(false);
+  const [isCursorReady, setIsCursorReady] = useState(false);
+
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -86,6 +96,8 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
+    if (!shouldTrackCursor) return;
+
     const updateCursorPosition = (e: MouseEvent) => {
       setCursorPosition({ x: e.clientX, y: e.clientY });
     };
@@ -115,7 +127,7 @@ export default function Home() {
       document.removeEventListener('mouseover', handleMouseOver);
       document.removeEventListener('mouseout', handleMouseOut);
     };
-  }, []);
+  }, [shouldTrackCursor]);
 
   useEffect(() => {
     if (isMenuOpen) {
@@ -152,12 +164,28 @@ export default function Home() {
       if (currentStep >= steps) {
         clearInterval(timer);
         setIsLoading(false);
-        setShowWelcome(true); // Toon welkomstscherm na laden
+        setShowWelcome(true);
       }
     }, interval);
 
     return () => clearInterval(timer);
   }, []);
+
+  useEffect(() => {
+    if (showWelcome) {
+      setTimeout(() => {
+        setCursorPosition({
+          x: window.innerWidth / 2,
+          y: window.innerHeight / 2
+        });
+        
+        setTimeout(() => {
+          setShouldTrackCursor(true);
+          setIsCursorReady(true);
+        }, 50);
+      }, 100);
+    }
+  }, [showWelcome]);
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -172,6 +200,8 @@ export default function Home() {
         );
       } else if (command === "projects") {
         router.push('/projects');
+      } else if (command === "contact") {
+        router.push('/contact');
       } else {
         setDisplayText(`Command '${searchInput}' not found. Type 'help' for available commands.`);
       }
@@ -180,6 +210,7 @@ export default function Home() {
   };
 
   const handleWelcomeClick = () => {
+    setShouldTrackCursor(true);
     setShowWelcome(false);
     setShowMainContent(true);
   };
@@ -254,140 +285,167 @@ export default function Home() {
 
   if (showWelcome) {
     return (
-      <div 
-        onClick={handleWelcomeClick}
-        style={{
-          height: '100vh',
-          width: '100vw',
-          backgroundColor: 'black',
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'center',
-          alignItems: 'center',
-          gap: '2rem',
-          cursor: 'pointer',
-          backgroundImage: `
-            linear-gradient(rgba(38, 38, 38, 0.3) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(38, 38, 38, 0.3) 1px, transparent 1px)
-          `,
-          backgroundSize: '50px 50px',
-          backgroundPosition: 'center center',
-        }}
-      >
-        <div style={{ position: 'relative' }}>
-          <div style={{
-            position: 'absolute',
-            top: '-20px',
-            left: 0,
-            width: '100%',
-            height: '2px',
-            overflow: 'hidden',
-          }}>
+      <>
+        <div
+          style={{
+            width: isHovering ? '40px' : '20px',
+            height: isHovering ? '40px' : '20px',
+            backgroundColor: 'transparent',
+            border: '2px solid #292929',
+            borderRadius: '50%',
+            position: 'fixed',
+            pointerEvents: 'none',
+            transform: `translate(${cursorPosition.x - (isHovering ? 20 : 10)}px, ${cursorPosition.y - (isHovering ? 20 : 10)}px)`,
+            zIndex: 9999,
+            mixBlendMode: 'normal',
+            opacity: isCursorReady ? 1 : 0,
+            ...(isCursorReady && {
+              transition: 'all 0.2s ease-out'
+            })
+          }}
+        />
+        
+        <div 
+          onClick={handleWelcomeClick}
+          style={{
+            height: '100vh',
+            width: '100vw',
+            backgroundColor: 'black',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            alignItems: 'center',
+            gap: '2rem',
+            cursor: 'pointer',
+            backgroundImage: `
+              linear-gradient(rgba(38, 38, 38, 0.3) 1px, transparent 1px),
+              linear-gradient(90deg, rgba(38, 38, 38, 0.3) 1px, transparent 1px)
+            `,
+            backgroundSize: '50px 50px',
+            backgroundPosition: 'center center',
+          }}
+        >
+          <div style={{ position: 'relative' }}>
             <div style={{
               position: 'absolute',
-              height: '100%',
-              width: '50%',
-              background: '#262626',
-              animation: 'slideLeft 2s linear infinite',
-            }} />
+              top: '-20px',
+              left: 0,
+              width: '100%',
+              height: '2px',
+              overflow: 'hidden',
+            }}>
+              <div style={{
+                position: 'absolute',
+                height: '100%',
+                width: '50%',
+                background: '#262626',
+                animation: 'slideLeft 2s linear infinite',
+              }} />
+            </div>
+            <h1 style={{
+              color: '#262626',
+              fontFamily: "'Bruno Ace SC', cursive",
+              fontSize: 'clamp(2rem, 8vw, 6rem)',
+              textAlign: 'center',
+              margin: 0,
+              animation: 'float 3s ease-in-out infinite',
+            }}>
+              LUC VAN CASTEREN
+            </h1>
+            <div style={{
+              position: 'absolute',
+              bottom: '-20px',
+              left: 0,
+              width: '100%',
+              height: '2px',
+              overflow: 'hidden',
+            }}>
+              <div style={{
+                position: 'absolute',
+                height: '100%',
+                width: '50%',
+                background: '#262626',
+                animation: 'slideRight 2s linear infinite',
+              }} />
+            </div>
           </div>
-          <h1 style={{
+          <p style={{
             color: '#262626',
             fontFamily: "'Bruno Ace SC', cursive",
-            fontSize: 'clamp(2rem, 8vw, 6rem)',
-            textAlign: 'center',
+            fontSize: 'clamp(0.8rem, 1.5vw, 1rem)',
             margin: 0,
-            animation: 'float 3s ease-in-out infinite',
-          }}>
-            LUC VAN CASTEREN
-          </h1>
-          <div style={{
             position: 'absolute',
-            bottom: '-20px',
-            left: 0,
-            width: '100%',
-            height: '2px',
-            overflow: 'hidden',
+            bottom: '2rem',
+            animation: 'pulse 2s ease-in-out infinite',
           }}>
-            <div style={{
-              position: 'absolute',
-              height: '100%',
-              width: '50%',
-              background: '#262626',
-              animation: 'slideRight 2s linear infinite',
-            }} />
-          </div>
-        </div>
-        <p style={{
-          color: '#262626',
-          fontFamily: "'Bruno Ace SC', cursive",
-          fontSize: 'clamp(0.8rem, 1.5vw, 1rem)',
-          margin: 0,
-          position: 'absolute',
-          bottom: '2rem',
-          animation: 'pulse 2s ease-in-out infinite',
-        }}>
-          <span className="desktop-text">click anywhere</span>
-          <span className="mobile-text">tap anywhere</span>
-        </p>
+            <span className="desktop-text">click anywhere</span>
+            <span className="mobile-text">tap anywhere</span>
+          </p>
 
-        <style jsx>{`
-          @keyframes float {
-            0% {
-              transform: translateY(0px);
+          <style jsx>{`
+            @keyframes float {
+              0% {
+                transform: translateY(0px);
+              }
+              50% {
+                transform: translateY(-20px);
+              }
+              100% {
+                transform: translateY(0px);
+              }
             }
-            50% {
-              transform: translateY(-20px);
-            }
-            100% {
-              transform: translateY(0px);
-            }
-          }
 
-          @keyframes pulse {
-            0% {
-              opacity: 0.1;
+            @keyframes pulse {
+              0% {
+                opacity: 0.1;
+              }
+              50% {
+                opacity: 1;
+              }
+              100% {
+                opacity: 0.1;
+              }
             }
-            50% {
-              opacity: 1;
-            }
-            100% {
-              opacity: 0.1;
-            }
-          }
 
-          @keyframes slideRight {
-            0% {
-              left: -50%;
+            @keyframes slideRight {
+              0% {
+                left: -50%;
+              }
+              100% {
+                left: 100%;
+              }
             }
-            100% {
-              left: 100%;
-            }
-          }
 
-          @keyframes slideLeft {
-            0% {
-              right: -50%;
+            @keyframes slideLeft {
+              0% {
+                right: -50%;
+              }
+              100% {
+                right: 100%;
+              }
             }
-            100% {
-              right: 100%;
-            }
-          }
 
-          .mobile-text {
-            display: none;
-          }
-
-          @media (hover: none) and (pointer: coarse) {
-            .desktop-text {
+            .mobile-text {
               display: none;
             }
-            .mobile-text {
-              display: inline;
+
+            @media (hover: none) and (pointer: coarse) {
+              .desktop-text {
+                display: none;
+              }
+              .mobile-text {
+                display: inline;
+              }
             }
-          }
-        `}</style>
-      </div>
+
+            @media (max-width: 768px) {
+              .footer-title-mobile {
+                font-size: 3rem !important;
+              }
+            }
+          `}</style>
+        </div>
+      </>
     );
   }
 
@@ -506,31 +564,166 @@ export default function Home() {
         </div>
       </div>
 
-      <footer style={styles.footer}>
-        <div style={styles.footerContent} className="footer-content-mobile">
-          <h2 style={styles.footerTitle} className="underline-animation footer-title-mobile">
-            {"LET'S\nCHAT"}
+      <footer style={{
+        width: '100%',
+        backgroundColor: 'black',
+        borderTop: '1px solid #262626',
+        padding: '2rem 0',
+        marginTop: 'auto',
+        zIndex: 2,
+        display: 'flex',
+        justifyContent: 'center',
+        position: 'relative',
+        overflow: 'hidden'
+      }}>
+        <div style={{
+          width: '100%',
+          maxWidth: '1200px',
+          margin: '0',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'flex-start',
+          gap: '1rem',
+          position: 'relative',
+          padding: '0',
+          left: '-13%',
+          backgroundColor: 'transparent'
+        }} className="footer-content-mobile">
+          <button
+            onClick={scrollToTop}
+            style={{
+              position: 'absolute',
+              right: '1rem',
+              bottom: '1rem',
+              background: 'transparent',
+              border: '2px solid #262626',
+              borderRadius: '50%',
+              width: '50px',
+              height: '50px',
+              display: window.innerWidth <= 768 ? 'none' : 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              cursor: 'pointer',
+              transition: 'all 0.3s ease',
+            }}
+            className="scroll-top-button"
+          >
+            <ArrowUp size={24} color="#262626" />
+          </button>
+          <h2 style={{
+            color: '#262626',
+            fontFamily: "'Bruno Ace SC', cursive",
+            fontSize: window.innerWidth <= 768 ? '3rem' : '7rem',
+            margin: '0 0 1rem 0',
+            textAlign: 'left',
+            letterSpacing: '0.05em',
+            whiteSpace: 'nowrap'
+          }} className="footer-title-mobile">
+            LET'S CHAT
           </h2>
-          <div style={styles.availableStatus}>
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.5rem',
+            marginTop: '1rem',
+            marginBottom: '1rem',
+          }}>
             <div className="status-dot"></div>
-            <span style={styles.availableText}>Available</span>
+            <span style={{
+              color: '#262626',
+              fontFamily: 'monospace',
+              fontSize: '1rem',
+            }}>Available</span>
           </div>
-          <div style={styles.lineContainer}>
-            <div style={styles.columnContainer}>
-              <div style={styles.line}></div>
-              <h3 style={styles.columnTitle}>Social</h3>
-              <div style={styles.columnLinks}>
-                <a href="#" style={styles.columnLink}>Instagram</a>
-                <a href="#" style={styles.columnLink}>LinkedIn</a>
+          <div style={{
+            display: 'flex',
+            alignItems: 'flex-start',
+            width: '100%',
+            marginTop: '2rem',
+          }}>
+            <div style={{
+              flex: 1,
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '1rem',
+              paddingRight: '2rem',
+            }}>
+              <div style={{
+                height: '1px',
+                backgroundColor: '#262626',
+                width: '100%',
+                marginBottom: '1rem',
+              }}></div>
+              <h3 style={{
+                color: '#262626',
+                fontFamily: 'monospace',
+                fontSize: '1.2rem',
+                margin: '0.2rem 0',
+              }}>Social</h3>
+              <div style={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '0.5rem',
+              }}>
+                <a href="#" style={{
+                  color: '#262626',
+                  textDecoration: 'none',
+                  fontFamily: 'monospace',
+                  fontSize: '1rem',
+                  transition: 'opacity 0.2s',
+                  cursor: 'pointer',
+                }}>Instagram</a>
+                <a href="#" style={{
+                  color: '#262626',
+                  textDecoration: 'none',
+                  fontFamily: 'monospace',
+                  fontSize: '1rem',
+                  transition: 'opacity 0.2s',
+                  cursor: 'pointer',
+                }}>LinkedIn</a>
               </div>
             </div>
-            <div style={styles.lineGap}></div>
-            <div style={styles.columnContainer}>
-              <div style={styles.line}></div>
-              <h3 style={styles.columnTitle}>Contact</h3>
-              <div style={styles.columnLinks}>
-                <a href="#" style={styles.columnLink}>Phone</a>
-                <a href="#" style={styles.columnLink}>Email</a>
+            <div style={{ width: '50px' }}></div>
+            <div style={{
+              flex: 1,
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '1rem',
+              paddingRight: '2rem',
+            }}>
+              <div style={{
+                height: '1px',
+                backgroundColor: '#262626',
+                width: '100%',
+                marginBottom: '1rem',
+              }}></div>
+              <h3 style={{
+                color: '#262626',
+                fontFamily: 'monospace',
+                fontSize: '1.2rem',
+                margin: '0.2rem 0',
+              }}>Contact</h3>
+              <div style={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '0.5rem',
+              }}>
+                <a href="#" style={{
+                  color: '#262626',
+                  textDecoration: 'none',
+                  fontFamily: 'monospace',
+                  fontSize: '1rem',
+                  transition: 'opacity 0.2s',
+                  cursor: 'pointer',
+                }}>Phone</a>
+                <a href="#" style={{
+                  color: '#262626',
+                  textDecoration: 'none',
+                  fontFamily: 'monospace',
+                  fontSize: '1rem',
+                  transition: 'opacity 0.2s',
+                  cursor: 'pointer',
+                }}>Email</a>
               </div>
             </div>
           </div>
@@ -702,17 +895,18 @@ const styles: Styles = {
     padding: '2rem 0',
     marginTop: 'auto',
     zIndex: 2,
+    display: 'flex',
+    justifyContent: 'center'
   },
   footerContent: {
     width: '100%',
     maxWidth: '1200px',
-    margin: '0',
+    margin: '0 auto',
     display: 'flex',
     flexDirection: 'column',
-    alignItems: 'flex-start',
+    alignItems: 'center',
     gap: '1rem',
     position: 'relative',
-    left: '15rem',
     paddingRight: '2rem',
   },
   footerText: {
@@ -822,6 +1016,15 @@ const styles: Styles = {
     height: '75px',
     objectFit: 'cover',
     borderRadius: '50%'
+  },
+  scrollTopButton: {
+    backgroundColor: 'transparent',
+    border: 'none',
+    cursor: 'pointer',
+    position: 'absolute',
+    top: '20px',
+    right: '20px',
+    zIndex: 1000,
   },
 }
   

@@ -517,3 +517,9 @@ textarea {
   background-clip: text;
 }
 
+@media (max-width: 768px) {
+  .footer-title-mobile {
+    font-size: 2rem !important;
+  }
+}
+

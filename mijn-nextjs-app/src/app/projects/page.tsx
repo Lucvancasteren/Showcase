@@ -48,6 +48,23 @@ export default function Projects() {
 
   return (
     <>
+      <div 
+        style={{
+          position: 'fixed',
+          left: cursorPosition.x,
+          top: cursorPosition.y,
+          width: isHovering ? '50px' : '20px',
+          height: isHovering ? '50px' : '20px',
+          backgroundColor: 'transparent',
+          border: '2px solid #292929',
+          borderRadius: '50%',
+          transform: 'translate(-50%, -50%)',
+          transition: 'width 0.3s, height 0.3s',
+          pointerEvents: 'none',
+          zIndex: 9999,
+        }}
+      />
+      
       <div>
         <div style={{
           height: '100vh',
@@ -85,7 +102,7 @@ export default function Projects() {
                 cursor: 'pointer',
                 filter: 'brightness(100%)',
               }}
-              className="first-project-image"
+              className="first-project-image project-image"
               onMouseEnter={(e) => {
                 e.currentTarget.style.transform = 'scale(1.1)';
                 e.currentTarget.style.filter = 'brightness(20%)';
@@ -132,7 +149,7 @@ export default function Projects() {
                 cursor: 'pointer',
                 filter: 'brightness(100%)',
               }}
-              className="second-project-image"
+              className="second-project-image project-image"
               onMouseEnter={(e) => {
                 e.currentTarget.style.transform = 'scale(1.1)';
                 e.currentTarget.style.filter = 'brightness(20%)';
@@ -179,7 +196,7 @@ export default function Projects() {
                 cursor: 'pointer',
                 filter: 'brightness(100%)',
               }}
-              className="third-project-image"
+              className="third-project-image project-image"
               onMouseEnter={(e) => {
                 e.currentTarget.style.transform = 'scale(1.1)';
                 e.currentTarget.style.filter = 'brightness(20%)';
@@ -413,6 +430,95 @@ export default function Projects() {
                 display: none !important;
               }
             }
+
+            .project-title {
+              position: relative;
+            }
+
+            .project-title:hover {
+              color: #292929;
+              text-shadow: 
+                0 0 5px #292929,
+                0 0 10px #292929,
+                0 0 20px #292929;
+              animation: glitch 0.5s ease-in-out infinite alternate;
+            }
+
+            @keyframes glitch {
+              0% {
+                transform: skew(0deg);
+              }
+              20% {
+                transform: skew(2deg);
+              }
+              40% {
+                transform: skew(-2deg);
+              }
+              60% {
+                transform: skew(1deg);
+              }
+              80% {
+                transform: skew(-1deg);
+              }
+              100% {
+                transform: skew(0deg);
+              }
+            }
+
+            .project-image {
+              box-shadow: none;
+              transition: all 0.3s ease, box-shadow 0.3s ease;
+            }
+
+            .project-image:hover {
+              box-shadow: 
+                0 0 5px #292929,
+                0 0 10px #292929,
+                0 0 20px #292929;
+              animation: glitch 0.5s ease-in-out infinite alternate;
+            }
+
+            .hover-text {
+              opacity: 0;
+              transition: opacity 0.3s ease;
+            }
+
+            .hover-text.visible {
+              opacity: 1;
+              text-shadow: 
+                0 0 5px #292929,
+                0 0 10px #292929,
+                0 0 20px #292929;
+              animation: glitch 0.5s ease-in-out infinite alternate;
+            }
+
+            @keyframes glitch {
+              0% {
+                transform: skew(0deg) scale(1.1);
+              }
+              20% {
+                transform: skew(2deg) scale(1.1);
+              }
+              40% {
+                transform: skew(-2deg) scale(1.1);
+              }
+              60% {
+                transform: skew(1deg) scale(1.1);
+              }
+              80% {
+                transform: skew(-1deg) scale(1.1);
+              }
+              100% {
+                transform: skew(0deg) scale(1.1);
+              }
+            }
+
+            @media (max-width: 768px) {
+              .project-title {
+                font-size: 3rem !important;
+                bottom: -1rem !important;
+              }
+            }
           `}</style>
 
           <h1 style={{
@@ -424,7 +530,10 @@ export default function Projects() {
             color: '#101010',
             margin: 0,
             zIndex: 10,
-          }} className="projects-title">
+            transition: 'all 0.3s ease',
+            cursor: 'default',
+          }} 
+          className="projects-title project-title">
             PROJECTS
           </h1>
         </div>
