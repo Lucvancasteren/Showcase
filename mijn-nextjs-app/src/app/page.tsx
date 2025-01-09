@@ -44,6 +44,7 @@ interface Styles {
   textWithImage: React.CSSProperties;
   inlineImage: React.CSSProperties;
   scrollTopButton: React.CSSProperties;
+  rotatingArrow: React.CSSProperties;
 }
 
 export default function Home() {
@@ -1032,20 +1033,6 @@ const styles: Styles = {
   rotatingArrow: {
     animation: 'flyAround 2s infinite ease-in-out',
     transformOrigin: 'center',
-  },
-  '@keyframes flyAround': {
-    '0%': {
-      transform: 'translateY(0) rotate(0deg)',
-    },
-    '50%': {
-      transform: 'translateY(-5px) rotate(180deg)',
-    },
-    '100%': {
-      transform: 'translateY(0) rotate(360deg)',
-    },
-  },
-  '.scroll-top-button:hover .rotating-arrow': {
-    animation: 'flyAround 1s infinite ease-in-out',
   },
 }
   
