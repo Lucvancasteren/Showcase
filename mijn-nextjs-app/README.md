@@ -1,36 +1,97 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Portfolio Website - Luc van Casteren
 
-## Getting Started
+Een moderne, interactieve portfolio website gebouwd met Next.js 14 en TypeScript.
 
-First, run the development server:
+## 🚀 Features
+
+- Responsief ontwerp voor alle schermformaten
+- Interactieve UI-elementen met vloeiende animaties
+- Custom cursor tracking
+- Parallax scrolling effecten
+- Terminal-stijl navigatie
+- Meertalige begroetingen
+- Project showcase met beeldcarrousel
+- Contactformulier
+
+## 🛠️ Technologieën
+
+- Next.js 14
+- TypeScript
+- React
+- CSS Modules
+- Lucide Icons
+- Google Fonts (Bruno Ace SC, Geist)
+
+## 📦 Installatie
+
+1. Clone de repository:
+
+```bash
+git clone https://github.com/[gebruikersnaam]/[repository-naam].git
+```
+
+2. Installeer de dependencies:
+
+```bash
+cd mijn-nextjs-app
+npm install
+```
+
+3. Start de development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) in je browser
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🗂️ Project Structuur
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```
+mijn-nextjs-app/
+├── src/
+│   ├── app/
+│   │   ├── about/
+│   │   ├── contact/
+│   │   ├── projects/
+│   │   ├── project1/
+│   │   ├── globals.css
+│   │   ├── layout.tsx
+│   │   ├── page.tsx
+│   │   └── styles.css
+│   └── ...
+├── public/
+│   └── afbeeldingen/
+└── ...
+```
 
-## Learn More
+## 📱 Pagina's
 
-To learn more about Next.js, take a look at the following resources:
+- **Home** (`/`): Landing page met animaties en introductie
+- **About** (`/about`): Informatie over Luc van Casteren
+- **Projects** (`/projects`): Overzicht van portfolio projecten
+- **Contact** (`/contact`): Contactformulier en contactgegevens
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 🎨 Styling
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Het project maakt gebruik van:
+- Inline styles voor component-specifieke styling
+- CSS modules voor herbruikbare stijlen
+- Google Fonts voor typografie
+- Custom animaties voor interactieve elementen
 
-## Deploy on Vercel
+## 🔧 Scripts
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- `npm run dev`: Start development server
+- `npm run build`: Bouwt de productieversie
+- `npm start`: Start de productieserver
+- `npm run lint`: Voert linting uit
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 📄 Licentie
+
+Dit project is eigendom van Luc van Casteren. Alle rechten voorbehouden.
+
+## 📞 Contact
+
+- Email: luc1708@hotmail.com
+- Tel: (+31) 630 80 44 79
